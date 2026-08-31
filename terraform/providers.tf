@@ -2,7 +2,7 @@ terraform {
   required_version = ">= 1.15"
 
   backend "s3" {
-    bucket       = "devops-bootcamp-project-2026"
+    bucket       = "devops-bootcamp-terraform-farismohamed"
     key          = "terraform/terraform.tfstate"
     region       = "ap-southeast-1"
     use_lockfile = true
