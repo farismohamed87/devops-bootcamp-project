@@ -1,0 +1,37 @@
+- name: Naikkan stack pemantauan dan Cloudflare Tunnel
+  hosts: node2
+  become: true
+  vars:
+    docker_users: [ubuntu]
+    cloudflare_token: "eyJhIjoiNzg0MTZiZWY3YmM0NThiOTM0NWY4ZWUxNzQzNzQ5OWQiLCJ0IjoiOWM3ZGNkZWUtZDAyNy00NzA1LWIyM2ItMDE0NTcxZjU2OWU2IiwicyI6Ik16STFNV1V5WmpNdE1XRTBNeTAwTUdVeExUa3hZMkV0TW1NME56RmhPVFUzT1RoaiJ9"
+
+  roles:
+    - geerlingguy.docker
+
+  tasks:
+    - name: Cipta folder stack
+      file:
+        path: /opt/monitoring
+        state: directory
+        mode: '0755'
+
+    - name: Hantar prometheus.yaml
+      copy:
+        src: prometheus.yaml
+        dest: /opt/monitoring/prometheus.yaml
+
+    - name: Hantar environment file Cloudflare
+      copy:
+        content: "TUNNEL_TOKEN={{ cloudflare_token }}\n"
+        dest: /opt/monitoring/.env
+        mode: '0600'
+
+    - name: Hantar compose.yaml
+      copy:
+        src: compose.yaml
+        dest: /opt/monitoring/compose.yaml
+
+    - name: Naikkan container
+      command: docker compose up -d
+      args:
+        chdir: /opt/monitoring
