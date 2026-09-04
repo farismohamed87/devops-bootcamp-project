@@ -1,0 +1,47 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+
+env:
+  AWS_REGION: ap-southeast-1
+  ECR_REPOSITORY: devops-bootcamp/final-project-faris
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push image
+        working-directory: app/ship
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          TAG: ${{ github.sha }}
+        run: |
+          docker build -t "$REGISTRY/${{ env.ECR_REPOSITORY }}:$TAG" .
+          docker push "$REGISTRY/${{ env.ECR_REPOSITORY }}:$TAG"
+
+      - name: Deploy via Ansible (triggered over SSM)
+        run: |
+          aws ssm send-command \
+            --instance-ids "${{ secrets.ANSIBLE_CONTROLLER_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --parameters commands="[
+              'cd /var/snap/amazon-ssm-agent/13349/ansible',
+              'git pull',
+              'ansible-playbook playbook-web.yaml'
+            ]"
