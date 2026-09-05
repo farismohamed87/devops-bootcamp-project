@@ -14,6 +14,7 @@ This is the final project as requirement after completing Infratify DevOps Bootc
 - [Architecture](#architecture)
 - [Repository Structure](#repository-structure)
 - [Prerequisites](#prerequisites)
+- [Variables](#variables)
 - [Getting Started](#getting-started)
   - [1. Provision Infrastructure](#1-provision-infrastructure)
   - [2. Connect via SSM](#2-connect-via-ssm)
@@ -61,14 +62,16 @@ All servers are managed through **AWS Systems Manager (SSM) Session Manager** �
 
 ```
 ├── terraform/                  # Infrastructure as Code
-│   ├── vpc.tf                    # VPC, subnets, IGW, NAT Gateway, route tables
-│   ├── sg.tf                      # Security groups
-│   ├── ec2.tf                     # EC2 instances
+│   ├── providers.tf               # Terraform + AWS provider configuration, backend
+│   ├── variables.tf               # Input variable declarations (e.g. az, region)
+│   ├── network.tf                 # VPC, subnets, IGW, NAT Gateway, route tables
+│   ├── security.tf                # Security groups and rules
+│   ├── ec2.tf                     # EC2 instances (web server, controller, monitoring)
 │   └── output.tf                  # Outputs (IPs, IDs, ARNs)
 │
-├── ansible/                    # Configuration management (run from the controller)
-│   ├── inventory.ini              # Managed hosts
+├── ansible/                       # Configuration management (run from the controller)
 │   ├── ansible.cfg
+│   ├── inventory.ini                # Rendered inventory (generated from the template)
 │   ├── playbook-web.yaml            # Deploys the app container to the web server
 │   ├── playbook-exporter.yaml       # Installs node_exporter on all servers
 │   ├── playbook-prometheus.yaml     # Installs Prometheus on the monitoring server
@@ -94,6 +97,22 @@ All servers are managed through **AWS Systems Manager (SSM) Session Manager** �
 - [Session Manager plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html) installed locally
 - [Docker](https://docs.docker.com/get-docker/) installed locally
 - An existing Amazon ECR repository (e.g. `devops-bootcamp/final-project-faris`)
+
+## Variables
+
+Terraform inputs are declared in `terraform/variables.tf`. Set these before running `terraform apply`, either via a `terraform.tfvars` file, `-var` flags, or environment variables (`TF_VAR_<name>`).
+
+| Variable | Type | Required | Description |
+|---|---|---|---|
+| `az` | `string` | Yes | AWS Availability Zone used for both the public and private subnets (e.g. `ap-southeast-1a`) |
+
+> **Note:** the table above reflects the variables confirmed in use across `network.tf` (`var.az`). If `variables.tf` declares additional inputs (e.g. a project/name prefix, instance type, or CIDR overrides), update this table to match — check `terraform/variables.tf` directly for the full, authoritative list.
+
+Example `terraform.tfvars`:
+
+```hcl
+az = "ap-southeast-1a"
+```
 
 ## Getting Started
 
