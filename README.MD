@@ -197,7 +197,7 @@ Then open `http://localhost:8888` for Grafana (swap `3000` → `9090` for Promet
 
 This project uses **GitHub Actions** to automate the build-and-deploy flow, replacing the manual steps in [Build and Push the App Image](#3-build-and-push-the-app-image) and [Deploy with Ansible](#4-deploy-with-ansible) above.
 
-**Workflow file:** `.github/workflows/build-and-deploy.yml`
+**Workflow file:** `.github/workflows/deploy.yml`
 
 **Trigger:** every push to the `main` branch
 
@@ -243,11 +243,8 @@ Configure these under **Settings → Secrets and variables → Actions**:
 1. Builds the Docker image from `app/ship/` and pushes it to ECR, tagged with the Git commit SHA.
 2. Sends an SSM command to the Ansible controller instructing it to pull the latest playbooks from this repo and run `playbook-web.yaml`, which redeploys the container on the web server.
 
-No SSH keys, no manual `docker push`/`ansible-playbook` commands — a push to `main` is enough to ship a new build end to end.
 
-### Local equivalent
 
-The pipeline automates exactly the manual commands shown in [step 3](#3-build-and-push-the-app-image) and [step 4](#4-deploy-with-ansible) above — useful for debugging locally if a pipeline run fails.
 
 ## List of URLs
 
