@@ -3,7 +3,7 @@
   become: true
   vars:
     docker_users: [ubuntu]
-    cloudflare_token: "eyJhIjoiNzg0MTZiZWY3YmM0NThiOTM0NWY4ZWUxNzQzNzQ5OWQiLCJ0IjoiOWM3ZGNkZWUtZDAyNy00NzA1LWIyM2ItMDE0NTcxZjU2OWU2IiwicyI6Ik16STFNV1V5WmpNdE1XRTBNeTAwTUdVeExUa3hZMkV0TW1NME56RmhPVFUzT1RoaiJ9"
+    cloudflare_token: "<INSERT-KEY-HERE>"
 
   roles:
     - geerlingguy.docker
