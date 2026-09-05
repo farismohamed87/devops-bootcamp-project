@@ -14,7 +14,7 @@ data "aws_iam_instance_profile" "my_ssm_profile" {
 }
 
 # =====================================================================
-# Server 1 - Web server
+# Server 1 - Web server - 10.0.0.5
 # Public subnet, gets an Elastic IP, reachable on port 80 from anywhere
 # =====================================================================
 module "web_server" {
@@ -46,7 +46,7 @@ resource "aws_eip" "web_server_eip" {
 }
 
 # =====================================================================
-# Server 2 - Ansible controller
+# Server 2 - Ansible controller - 10.0.0.135
 # Private subnet
 # =====================================================================
 module "ansible_controller" {
@@ -68,7 +68,7 @@ module "ansible_controller" {
 }
 
 # =====================================================================
-# Server 3 - Monitoring server
+# Server 3 - Monitoring server - 10.0.0.136
 # Private subnet, internal-only, scrapes metrics (e.g. node_exporter) from other servers
 # =====================================================================
 module "monitoring_server" {
