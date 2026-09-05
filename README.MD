@@ -69,10 +69,9 @@ All servers are managed through **AWS Systems Manager (SSM) Session Manager** �
 │   ├── ec2.tf                     # EC2 instances (web server, controller, monitoring)
 │   └── output.tf                  # Outputs (IPs, IDs, ARNs)
 │
-├── ansible/                    # Configuration management (run from the controller)
+├── ansible/                       # Configuration management (run from the controller)
 │   ├── ansible.cfg
-│   ├── inventory.ini              # Rendered inventory (generated from the template)
-│   ├── inventory.ini.tftpl        # Terraform template used to render inventory.ini
+│   ├── inventory.ini                # Rendered inventory (generated from the template)
 │   ├── playbook-web.yaml            # Deploys the app container to the web server
 │   ├── playbook-exporter.yaml       # Installs node_exporter on all servers
 │   ├── playbook-prometheus.yaml     # Installs Prometheus on the monitoring server
